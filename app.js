@@ -4,25 +4,9 @@ const bodyParser = require("body-parser");
 const morgan = require('morgan');
 const cors = require('cors');
 const index = require('./routes/index');
-const hello = require('./routes/hello');
-const user = require('./routes/user');
+// const hello = require('./routes/hello');
+const documents = require('./routes/documents');
 const port = 1337;
-
-// MongoDB
-const mongo = require("mongodb").MongoClient;
-const dsn =  process.env.DBWEBB_DSN || "mongodb://localhost:27017/mumin";
-
-app.get("/list", async (request, response) => {
-    try {
-        let res = await findInCollection(dsn, "crowd", {}, {}, 0);
-
-        console.log(res);
-        response.json(res);
-    } catch (err) {
-        console.log(err);
-        response.json(err);
-    }
-});
 
 
 app.use(cors());
@@ -45,11 +29,8 @@ if (process.env.NODE_ENV !== 'test') {
 // Routes for index
 app.use('/', index);
 
-//Routes for /hello
-app.use('/hello', hello);
-
 //Routes for /user
-app.use('/user', user);
+app.use('/documents', documents);
 
 
 // Add routes for 404 and error handling
@@ -79,30 +60,3 @@ app.use((err, req, res, next) => {
 
 // Start up server
 app.listen(port, () => console.log(`Example API listening on port ${port}!`));
-
-
-/**
-  * Find documents in an collection by matching search criteria.
-  *
-  * @async
-  *
-  * @param {string} dsn        DSN to connect to database.
-  * @param {string} colName    Name of collection.
-  * @param {object} criteria   Search criteria.
-  * @param {object} projection What to project in results.
-  * @param {number} limit      Limit the number of documents to retrieve.
-  *
-  * @throws Error when database operation fails.
-  *
-  * @return {Promise<array>} The resultset as an array.
-  */
- async function findInCollection(dsn, colName, criteria, projection, limit) {
-    const client  = await mongo.connect(dsn);
-    const db = await client.db();
-    const col = await db.collection(colName);
-    const res = await col.find(criteria, projection).limit(limit).toArray();
-
-    await client.close();
-
-    return res;
-}
