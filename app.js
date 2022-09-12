@@ -10,7 +10,7 @@ const port = 1337;
 
 
 app.use(cors());
-
+app.use(bodyParser.json());
 
 // This is middleware called for all routes.
 // Middleware takes three parameters.

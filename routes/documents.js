@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const dbModel = require('../modules/dbModel.js');
+const { application } = require('express');
 // const db = require('../db/src/search.js');
 
 // MongoDB
@@ -21,10 +22,11 @@ router.get("/", async (request, response) => {
     }
 });
 
-router.post("/:title/:content", async (request, response) => {
+router.post("/", async (request, response) => {
 
+    // console.log(request.body);
     try {
-        let res = await dbModel.addToCollection(dsn, "crowd", request.params.title, request.params.content);
+        let res = await dbModel.addToCollection(dsn, "crowd", request.body.title, request.body.content);
 
         console.log(res);
         response.status(201).json(res);
@@ -33,6 +35,7 @@ router.post("/:title/:content", async (request, response) => {
         response.json(err);
     }
 })
+
 
 // PUT route for /documents
 router.put("/", (req, res) => {
