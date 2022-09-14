@@ -1,7 +1,5 @@
 // MongoDB
 const mongo = require("mongodb").MongoClient;
-const dsn =  process.env.DBWEBB_DSN || "mongodb://localhost:27017/documents";
-
 
 /**
  * Model to handle MongoDB requests.
@@ -37,14 +35,16 @@ const dbModel = {
         const client = await mongo.connect(dsn);
         const db = await client.db();
         const col = await db.collection(colName);
+
+        // Check if document with current title already exists in database.
         const exists = await dbModel.checkIfExists(dsn, colName, title);
         
+        // If document already exists update it.
+        // If not insert it into database. 
         if (exists.length > 0) {
             const id = exists[0]._id
-            console.log('true');
-            console.log(exists[0]._id);
-            const res = await col.updateOne( {title: title},
-                { $set: {content: content, lastSaved: new Date} } )
+            const res = await col.updateOne( {_id: id},
+                { $set: {title: title, content: content, lastSaved: new Date} } )
 
         } else {
             const res = await col.insertOne({title: title, content: content, lastSaved: new Date});
