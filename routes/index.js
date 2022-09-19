@@ -9,7 +9,7 @@ router.get("/", (req, res) => {
         }
     };
 
-    res.json(data);
+    res.status(200).json(data);
 
 });
 

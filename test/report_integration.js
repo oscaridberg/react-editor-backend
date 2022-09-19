@@ -17,7 +17,7 @@ describe('Reports', () => {
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.an("array");
-                    // res.body.length.should.be.above(0);
+                    res.body.length.should.be.above(0);
 
                     done();
                 });
@@ -30,6 +30,8 @@ describe('Reports', () => {
                 .post('/documents/')
                 .end((err, res) => {
                     res.should.have.status(201);
+                    res.body.should.be.an("object");
+                    res.body.should.have.property("insertedId");
 
 
                     done();

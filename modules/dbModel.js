@@ -33,7 +33,7 @@ const dbModel = {
     addToCollection: async function addToCollection(colName, title, content) {
         const db = await database.getDb(colName);
         const col = db.collection;
-
+        let res;
         // Check if document with current title already exists in database.
         const exists = await dbModel.checkIfExists(colName, title);
         
@@ -41,15 +41,17 @@ const dbModel = {
         // If not insert it into database. 
         if (exists.length > 0) {
             const id = exists[0]._id
-            const res = await col.updateOne( {_id: id},
+            res = await col.updateOne( {_id: id},
                 { $set: {title: title, content: content, lastSaved: new Date} } )
 
         } else {
-            const res = await col.insertOne({title: title, content: content, lastSaved: new Date});
+            res = await col.insertOne({title: title, content: content, lastSaved: new Date});
         }
 
 
         await db.client.close();
+
+        return res;
     },
 
     checkIfExists: async function checkIfExists(colName, title) {
