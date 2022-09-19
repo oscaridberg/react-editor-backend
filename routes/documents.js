@@ -2,16 +2,19 @@ var express = require('express');
 var router = express.Router();
 const dbModel = require('../modules/dbModel.js');
 const { application } = require('express');
+const mongo = require("mongodb").MongoClient;
+
 // const db = require('../db/src/search.js');
 
 // MongoDB
 let dsn = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@cluster0.zoy1g8s.mongodb.net/?retryWrites=true&w=majority`;
 
 
+
 // GET documents in database.
 router.get("/", async (request, response) => {
     try {
-        let res = await dbModel.findInCollection(dsn, "documents", {}, {}, 0);
+        let res = await dbModel.findInCollection("documents", {}, {}, 0);
 
         console.log(res);
         response.json(res);
@@ -25,7 +28,7 @@ router.post("/", async (request, response) => {
 
     // console.log(request.body);
     try {
-        let res = await dbModel.addToCollection(dsn, "documents", request.body.title, request.body.content);
+        let res = await dbModel.addToCollection("documents", request.body.title, request.body.content);
 
         console.log(res);
         response.status(201).json(res);

@@ -1,10 +1,32 @@
 // MongoDB
 const mongo = require("mongodb").MongoClient;
-
+const database = require('../db/database.js');
 /**
  * Model to handle MongoDB requests.
  */
 const dbModel = {
+
+    // getDb: async function getDb (colName) {
+    //     let dsn = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@cluster0.zoy1g8s.mongodb.net/?retryWrites=true&w=majority`;
+
+    //     if (process.env.NODE_ENV === 'test') {
+    //         // We can even use MongoDB Atlas for testing
+    //         dsn = "mongodb://localhost:27017/test";
+    //     }
+
+    //     const client  = await mongo.connect(dsn, {
+    //         useNewUrlParser: true,
+    //         useUnifiedTopology: true,
+    //     });
+    //     const db = await client.db();
+    //     const collection = await db.collection(colName);
+
+    //     return {
+    //         collection: collection,
+    //         client: client,
+    //     };
+    // },
+
     /**
      * Find documents in an collection by matching search criteria.
      *
@@ -20,24 +42,22 @@ const dbModel = {
      *
      * @return {Promise<array>} The resultset as an array.
      */
-    findInCollection: async function findInCollection (dsn, colName, criteria, projection, limit) {
-        const client = await mongo.connect(dsn);
-        const db = await client.db();
-        const col = await db.collection(colName);
+    findInCollection: async function findInCollection (colName, criteria, projection, limit) {
+        const db = await database.getDb(colName);
+        const col = db.collection;
         const res = await col.find(criteria, projection).limit(limit).toArray();
 
-        await client.close();
+        await db.client.close();
 
         return res;
     },
 
-    addToCollection: async function addToCollection(dsn, colName, title, content) {
-        const client = await mongo.connect(dsn);
-        const db = await client.db();
-        const col = await db.collection(colName);
+    addToCollection: async function addToCollection(colName, title, content) {
+        const db = await database.getDb(colName);
+        const col = db.collection;
 
         // Check if document with current title already exists in database.
-        const exists = await dbModel.checkIfExists(dsn, colName, title);
+        const exists = await dbModel.checkIfExists(colName, title);
         
         // If document already exists update it.
         // If not insert it into database. 
@@ -51,15 +71,15 @@ const dbModel = {
         }
 
 
-        await client.close();
+        await db.client.close();
     },
 
-    checkIfExists: async function checkIfExists(dsn, colName, title) {
-        const client = await mongo.connect(dsn);
-        const db = await client.db();
-        const col = await db.collection(colName);
-        const res = await col.find({title: `${title}`}).toArray();
-        await client.close();
+    checkIfExists: async function checkIfExists(colName, title) {
+        const db = await database.getDb(colName);
+        // const col = await db.collection;
+        const res = await db.collection.find({title: `${title}`}).toArray();
+        console.log(res);
+        await db.client.close();
         return res;
     }
 }
