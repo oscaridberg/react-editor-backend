@@ -5,28 +5,6 @@ const database = require('../db/database.js');
  * Model to handle MongoDB requests.
  */
 const dbModel = {
-
-    // getDb: async function getDb (colName) {
-    //     let dsn = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@cluster0.zoy1g8s.mongodb.net/?retryWrites=true&w=majority`;
-
-    //     if (process.env.NODE_ENV === 'test') {
-    //         // We can even use MongoDB Atlas for testing
-    //         dsn = "mongodb://localhost:27017/test";
-    //     }
-
-    //     const client  = await mongo.connect(dsn, {
-    //         useNewUrlParser: true,
-    //         useUnifiedTopology: true,
-    //     });
-    //     const db = await client.db();
-    //     const collection = await db.collection(colName);
-
-    //     return {
-    //         collection: collection,
-    //         client: client,
-    //     };
-    // },
-
     /**
      * Find documents in an collection by matching search criteria.
      *
