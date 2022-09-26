@@ -15,8 +15,10 @@ const dbModel = require('./modules/dbModel.js');
 const server = require('http').createServer(app);
 const io = require("socket.io")(server, {
     cors: {
-      origin: "http://localhost:3000",
-      methods: ["GET", "POST"]
+        origin: "*",
+        'Access-Control-Allow-Origin': 'https://www.student.bth.se',
+    //   origin: "http://localhost:3000",
+        methods: ["GET", "POST"]
     }
   });
 
