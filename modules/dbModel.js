@@ -22,7 +22,7 @@ const dbModel = {
      */
     findInCollection: async function findInCollection (colName, criteria, projection, limit) {
         const db = await database.getDb(colName);
-        const col = db.collection;
+        const col = await db.collection;
         const res = await col.find(criteria, projection).limit(limit).toArray();
 
         await db.client.close();
@@ -34,6 +34,7 @@ const dbModel = {
         const db = await database.getDb(colName);
         const col = db.collection;
         let res;
+
         // Check if document with current title already exists in database.
         const exists = await dbModel.checkIfExists(colName, title);
         

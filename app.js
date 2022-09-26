@@ -7,6 +7,53 @@ const cors = require('cors');
 const index = require('./routes/index');
 const documents = require('./routes/documents');
 const port = process.env.PORT || 1337;
+// const http = require('http');
+const dbModel = require('./modules/dbModel.js');
+
+
+// IO websocket
+const server = require('http').createServer(app);
+const io = require("socket.io")(server, {
+    cors: {
+      origin: "http://localhost:3000",
+      methods: ["GET", "POST"]
+    }
+  });
+
+io.on('connection', function (socket) {
+    socket.on('create', function(room) {
+        socket.join(room);
+        // console.log(room);
+    });
+
+    socket.on("doc", function (data) {
+        socket.to(data["_id"]).emit("doc", data);
+        // console.log(data.html);
+        // Spara till databas och göra annat med data
+        async function saveToDb(data) {
+            try {
+                let res;
+                const currentSave = await dbModel.checkIfExists("documents", data.title);
+
+                if (currentSave['content'] != data.html) {
+                    res = await dbModel.addToCollection("documents", data.title, data.html);
+                }
+                console.log(res);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+
+        
+        if (data["title"]) {
+            saveToDb(data);
+        };
+    });
+
+});
+
+
+
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -14,8 +61,8 @@ app.use(bodyParser.json());
 // This is middleware called for all routes.
 // Middleware takes three parameters.
 app.use((req, res, next) => {
-    console.log(req.method);
-    console.log(req.path);
+    // console.log(req.method);
+    // console.log(req.path);
     next();
 })
 
@@ -58,6 +105,8 @@ app.use((err, req, res, next) => {
 
 
 // Start up server
-const server = app.listen(port, () => console.log(`Example API listening on port ${port}!`));
+// const server = app.listen(port, () => console.log(`Example API listening on port ${port}!`));
+server.listen(port);
+
 
 module.exports = server;
