@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const index = require('./routes/index');
 const documents = require('./routes/documents');
+const auth = require('./routes/auth');
 const port = process.env.PORT || 1337;
 // const http = require('http');
 const dbModel = require('./modules/dbModel.js');
@@ -79,6 +80,9 @@ app.use('/', index);
 
 //Routes for /user
 app.use('/documents', documents);
+
+//Routes for /auth
+app.use('/auth', auth);
 
 
 // Add routes for 404 and error handling
