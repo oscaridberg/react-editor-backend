@@ -60,7 +60,7 @@ const authModel = {
 
 
                     // Check if user already exists in database.
-                    const exists = await dbModel.checkIfUserExists('users', email);
+                    const exists = await dbModel.findUser(email);
 
                     if (exists.length === 0) {
                         await db.collection.insertOne(doc)
@@ -106,6 +106,28 @@ const authModel = {
                 }
             })
         };
+
+        try {
+            const user = await dbModel.findUser(email);
+
+            if (user) {
+                return authModel.comparePasswords(res, user, password);
+            }
+            console.log(user);
+
+            return res.status(401).json({
+                data: {
+                    message: 'User does not exist.'
+                }
+            });
+        } catch (error) {
+            return res.status(500).json({
+                errors: {
+                    status: 500,
+                    message: 'Could not find user'
+                }
+            })
+        }
 
 
     }

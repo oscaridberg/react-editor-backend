@@ -64,10 +64,10 @@ const dbModel = {
         return res;
     },
 
-    checkIfUserExists: async function checkIfUserExists(colName, email) {
+    findUser: async function findUser(email, colName='users') {
         const db = await database.getDb(colName);
         const res = await db.collection.find({email: `${email}`}).toArray();
-        // console.log(res);
+        console.log(res);
         await db.client.close();
         return res;
     }
