@@ -39,7 +39,7 @@ io.on('connection', function (socket) {
                 const currentSave = await dbModel.checkIfExists("documents", data.title);
 
                 if (currentSave['content'] != data.html) {
-                    res = await dbModel.addToCollection("documents", data.title, data.html);
+                    res = await dbModel.addToCollection("documents", data.title, data.html, data.authUser);
                 }
                 console.log(res);
             } catch (err) {

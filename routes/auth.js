@@ -11,8 +11,8 @@ let dsn = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSW
 router.post('/register', async (req, res) => {
     try {
         const body = {
-            'email': req.body[0].email,
-            'password': req.body[0].password
+            'email': req.body.email,
+            'password': req.body.password
         };
        await authModel.register(res, body);
 
@@ -27,8 +27,8 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const body = {
-            'email': req.body[0].email,
-            'password': req.body[0].password
+            'email': req.body.email,
+            'password': req.body.password
         };
        await authModel.login(res, body);
 

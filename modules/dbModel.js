@@ -30,7 +30,7 @@ const dbModel = {
         return res;
     },
 
-    addToCollection: async function addToCollection(colName, title, content) {
+    addToCollection: async function addToCollection(colName, title, content, user) {
         const db = await database.getDb(colName);
         const col = db.collection;
         let res;
@@ -43,10 +43,10 @@ const dbModel = {
         if (exists.length > 0) {
             const id = exists[0]._id
             res = await col.updateOne( {_id: id},
-                { $set: {title: title, content: content, lastSaved: new Date} } )
+                { $set: {title: title, content: content, lastSaved: new Date, authUser: user} } )
 
         } else {
-            res = await col.insertOne({title: title, content: content, lastSaved: new Date});
+            res = await col.insertOne({title: title, content: content, lastSaved: new Date, authUser: user });
         }
 
 

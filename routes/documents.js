@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const dbModel = require('../modules/dbModel.js');
 const { application } = require('express');
+const authModel = require('../modules/authModel.js');
 const mongo = require("mongodb").MongoClient;
 
 // const db = require('../db/src/search.js');
@@ -12,23 +13,24 @@ let dsn = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSW
 
 
 // GET documents in database.
-router.get("/", async (request, response) => {
+router.get("/",
+(req, res, next) => authModel.checkToken(req, res, next), 
+async (request, response) => {
     try {
         let res = await dbModel.findInCollection("documents", {}, {}, 0);
-
-        console.log(res);
+        // console.log(res);
         response.json(res);
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         response.json(err);
     }
 });
 
-router.post("/", async (request, response) => {
-
-    // console.log(request.body);
+router.post("/", 
+(req, res, next) => authModel.checkToken(req, res, next), 
+async (request, response) => {
     try {
-        let res = await dbModel.addToCollection("documents", request.body.title, request.body.content);
+        let res = await dbModel.addToCollection("documents", request.body.title, request.body.content, request.body.user);
 
         console.log(res);
         response.status(201).json(res);

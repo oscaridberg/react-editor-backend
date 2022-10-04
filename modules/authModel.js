@@ -13,8 +13,7 @@ const authModel = {
 
     // Register new user
     register: async function register(res, body) {
-        // console.log(jwtSecret);
-        // console.log(body);
+
         const email = body.email;
         const password = body.password;
 
@@ -107,13 +106,13 @@ const authModel = {
             })
         };
 
+        // Try to login user
         try {
             const user = await dbModel.findUser(email);
 
             if (user) {
                 return authModel.comparePasswords(res, user, password);
             }
-            console.log(user);
 
             return res.status(401).json({
                 data: {
@@ -130,6 +129,75 @@ const authModel = {
         }
 
 
+    },
+
+    comparePasswords: async function comparePasswords(res, user, password) {
+        bcrypt.compare(password, user[0].password, function (err, result) {
+            if (err) {
+                return res.status(500).json({
+                    errors: {
+                        status: 500, 
+                        message: "Could not decrypt password."
+                    }
+                });
+            };
+
+            if (result) {
+                
+                let payload = { email: user[0].email };
+                let jwtToken = jwt.sign(payload, jwtSecret, { expiresIn: '24h' });
+
+                return res.status(201).json({
+                    data: {
+                        _id: user[0]['_id'],
+                        email: user[0].email,
+                        token: jwtToken
+
+                    }
+                })
+            }
+
+
+            return res.status(401).json({
+                errors: {
+                    status: 401,
+                    message: 'Incorrect password'
+                }
+            })
+        })
+    },
+
+    checkToken: async function checkToken(req, res, next) {
+        let token = req.headers['x-access-token'];
+        
+        if (token) {
+            jwt.verify(token, jwtSecret, function(err, decoded) {
+                if (err) {
+                    return res.status(500).json({
+                        errors: {
+                            status: 500,
+                            source: req.path,
+                            title: 'Failed authentication',
+                            detail: err.message
+                        }
+                    });
+                }
+
+            req.user = {};
+            req.user.email= decoded.email;
+            console.log('passed!');
+            return next();
+            });
+        } else {
+            return res.status(401).json({
+                errors: {
+                    status: 401,
+                    source: req.path,
+                    title: 'No token',
+                    detail: 'No token in request headers'
+                }
+            });
+        };
     }
 };
 

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "nyc --reporter=html --reporter=text --reporter=clover mocha",
     "start": "node app.js",
-    "watch": "nodeamon app.js",
+    "watch": "nodemon app.js",
     "production": "NODE_ENV='production' node app.js"
   },
   "author": "",
@@ -22,6 +22,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.9.1",
     "morgan": "^1.10.0",
+    "nodemon": "^2.0.20",
     "socket.io": "^4.5.2"
   },
   "devDependencies": {
