@@ -60,7 +60,6 @@ const authModel = {
 
                     // Check if user already exists in database.
                     const exists = await dbModel.findUser(email);
-
                     if (exists.length === 0) {
                         await db.collection.insertOne(doc)
 
