@@ -10,6 +10,8 @@ const auth = require('./routes/auth');
 const port = process.env.PORT || 1337;
 // const http = require('http');
 const dbModel = require('./modules/dbModel.js');
+const { graphqlHTTP } = require('express-graphql');
+
 
 
 // IO websocket
@@ -78,12 +80,30 @@ if (process.env.NODE_ENV !== 'test') {
 // Routes for index
 app.use('/', index);
 
-//Routes for /user
+// Routes for /user
 app.use('/documents', documents);
 
-//Routes for /auth
+// Routes for /auth
 app.use('/auth', auth);
 
+
+// Route for GraphQL
+const visual = true;
+
+const {
+    GraphQLSchema
+} = require("graphql");
+
+const RootQueryType = require('./graphql/root.js');
+
+const schema = new GraphQLSchema({
+    query: RootQueryType
+});
+
+app.use('/graphql', graphqlHTTP ({
+    schema: schema,
+    graphiql: visual
+}));
 
 // Add routes for 404 and error handling
 // Catch 404 and forward to error handler.
