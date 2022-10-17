@@ -94,7 +94,7 @@ const authModel = {
     login: async function login (res, body) {
         const email = body.email;
         const password = body.password;
-
+        console.log('login');
         // Check if email and password are filled out
         if (!email || !password) {
             return res.status(400).json({
