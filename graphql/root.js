@@ -1,4 +1,5 @@
 const DocumentType = require("./document.js");
+const UserType = require("./user.js");
 const documents = require("../modules/documents.js");
 
 const {

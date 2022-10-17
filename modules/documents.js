@@ -1,4 +1,5 @@
 const database = require("../db/database.js");
+const mongo = require("mongodb").MongoClient;
 
 const documents = {
     getAll: async function getAll(
@@ -7,10 +8,10 @@ const documents = {
         let db;
 
         try {
-            db = await database.getDb();
+            db = await database.getDb('documents');
 
-            let result = await db.collection.find({}).toArray();
-            console.log('test');
+            let result = await db.collection.find({}, {}).limit(0).toArray();
+            console.log(result);
             if (res === undefined) {
                 return result;
             }
@@ -19,6 +20,7 @@ const documents = {
                 data: result
             });
         } catch (e) {
+            console.log(e.message);
             return res.json({
                 errors: {
                     status: 500,
