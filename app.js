@@ -7,6 +7,7 @@ const cors = require('cors');
 const index = require('./routes/index');
 const documents = require('./routes/documents');
 const auth = require('./routes/auth');
+const email = require('./routes/email');
 const port = process.env.PORT || 1337;
 // const http = require('http');
 const dbModel = require('./modules/dbModel.js');
@@ -85,6 +86,10 @@ app.use('/documents', documents);
 
 // Routes for /auth
 app.use('/auth', auth);
+
+// Routes for /email
+app.use('/email', email);
+
 
 
 // Route for GraphQL
