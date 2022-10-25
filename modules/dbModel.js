@@ -43,10 +43,10 @@ const dbModel = {
         if (exists.length > 0) {
             const id = exists[0]._id
             res = await col.updateOne( {_id: id},
-                { $set: {title: title, content: content, lastSaved: new Date, authUser: user} } )
+                { $set: {title: title, content: content, lastSaved: new Date, authUser: user, code: code} } )
 
         } else {
-            res = await col.insertOne({title: title, content: content, lastSaved: new Date, authUser: user });
+            res = await col.insertOne({title: title, content: content, lastSaved: new Date, authUser: user, code:code });
         }
 
 

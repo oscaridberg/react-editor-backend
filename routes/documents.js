@@ -30,7 +30,7 @@ router.post("/",
 (req, res, next) => authModel.checkToken(req, res, next), 
 async (request, response) => {
     try {
-        let res = await dbModel.addToCollection("documents", request.body.title, request.body.content, request.body.user);
+        let res = await dbModel.addToCollection("documents", request.body.title, request.body.content, request.body.user, request.body.code);
 
         console.log(res);
         response.status(201).json(res);
