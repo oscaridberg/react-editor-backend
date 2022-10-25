@@ -30,7 +30,7 @@ const dbModel = {
         return res;
     },
 
-    addToCollection: async function addToCollection(colName, title, content, user) {
+    addToCollection: async function addToCollection(colName, title, content, user, code) {
         const db = await database.getDb(colName);
         const col = db.collection;
         let res;
@@ -38,6 +38,7 @@ const dbModel = {
         // Check if document with current title already exists in database.
         const exists = await dbModel.checkIfExists(colName, title);
         
+        console.log(code);
         // If document already exists update it.
         // If not insert it into database. 
         if (exists.length > 0) {
@@ -46,7 +47,7 @@ const dbModel = {
                 { $set: {title: title, content: content, lastSaved: new Date, authUser: user, code: code} } )
 
         } else {
-            res = await col.insertOne({title: title, content: content, lastSaved: new Date, authUser: user, code:code });
+            res = await col.insertOne({title: title, content: content, lastSaved: new Date, authUser: user, code: code });
         }
 
 
@@ -67,7 +68,6 @@ const dbModel = {
     findUser: async function findUser(email, colName='users') {
         const db = await database.getDb(colName);
         const res = await db.collection.find({email: `${email}`}).toArray();
-        console.log(res);
         await db.client.close();
         return res;
     }
